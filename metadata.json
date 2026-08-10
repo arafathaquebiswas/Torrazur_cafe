@@ -1,0 +1,6 @@
+{
+  "name": "Torrazur - Italian Bakery & Café",
+  "description": "Official website and management portal for Torrazur, a premium Italian Bakery & Specialty Café in Bashundhara R/A, Dhaka.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
