@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SiteSettings } from '../types';
-import { MapPin, Phone, Mail, Instagram, MessageCircle, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, MessageCircle, ArrowRight, Eye } from 'lucide-react';
+import { ImageDetailModal, PictureDetailItem } from './ImageDetailModal';
 
 interface AboutProps {
   settings: SiteSettings;
@@ -8,6 +9,8 @@ interface AboutProps {
 }
 
 export const About: React.FC<AboutProps> = ({ settings, setActiveTab }) => {
+  const [selectedPicture, setSelectedPicture] = useState<PictureDetailItem | null>(null);
+
   return (
     <div className="bg-[#1C120C] text-[#FAF6F0] py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-16">
@@ -25,13 +28,24 @@ export const About: React.FC<AboutProps> = ({ settings, setActiveTab }) => {
         </div>
 
         {/* Hero Image */}
-        <div className="aspect-21/9 rounded-2xl overflow-hidden border border-[#3E281C] shadow-2xl relative">
+        <div
+          onClick={() => setSelectedPicture({
+            title: 'Torrazur Café Interior Atmosphere',
+            category: 'Interior',
+            imageUrl: '/images/torrazur-07.jpg',
+            description: 'Warm, cozy Italian cafe seating ambience located at Bashundhara R/A, Dhaka.',
+          })}
+          className="aspect-21/9 rounded-2xl overflow-hidden border border-[#3E281C] shadow-2xl relative group cursor-pointer"
+        >
           <img
             src="/images/torrazur-07.jpg"
             alt="Torrazur Cafe Interior Atmosphere"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             referrerPolicy="no-referrer"
           />
+          <div className="absolute top-4 right-4 bg-[#1C120C]/85 text-[#FAF6F0] group-hover:bg-[#C88A4B] group-hover:text-[#1C120C] p-2.5 rounded-full border border-[#3E281C] group-hover:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+            <Eye className="w-5 h-5" />
+          </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#1C120C] via-transparent to-transparent opacity-80" />
         </div>
 
@@ -50,21 +64,44 @@ export const About: React.FC<AboutProps> = ({ settings, setActiveTab }) => {
 
             {/* Photo Showcase Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
-              <div className="rounded-lg overflow-hidden border border-[#3E281C] aspect-4/3">
+              <div
+                onClick={() => setSelectedPicture({
+                  title: 'Torrazur Glass Bakery Counter Display',
+                  category: 'Bakery',
+                  imageUrl: '/images/torrazur-04.jpg',
+                  description: 'Fresh pastries, cornetti, and cakes displayed in our glass showcase counter.',
+                })}
+                className="rounded-lg overflow-hidden border border-[#3E281C] aspect-4/3 relative group cursor-pointer"
+              >
                 <img
                   src="/images/torrazur-04.jpg"
                   alt="Torrazur Glass Bakery Counter Display"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
+                <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover:bg-[#C88A4B] group-hover:text-[#1C120C] p-2 rounded-full border border-[#3E281C] group-hover:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                  <Eye className="w-4 h-4" />
+                </div>
               </div>
-              <div className="rounded-lg overflow-hidden border border-[#3E281C] aspect-4/3">
+
+              <div
+                onClick={() => setSelectedPicture({
+                  title: 'Torrazur Specialty Espresso Roasting & Brewing Bar',
+                  category: 'Coffee',
+                  imageUrl: '/images/torrazur-14.jpg',
+                  description: 'State of the art espresso machine and grinder bar for crafting specialty coffees.',
+                })}
+                className="rounded-lg overflow-hidden border border-[#3E281C] aspect-4/3 relative group cursor-pointer"
+              >
                 <img
                   src="/images/torrazur-14.jpg"
                   alt="Torrazur Specialty Espresso Roasting & Brewing Bar"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
+                <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover:bg-[#C88A4B] group-hover:text-[#1C120C] p-2 rounded-full border border-[#3E281C] group-hover:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                  <Eye className="w-4 h-4" />
+                </div>
               </div>
             </div>
 
@@ -154,6 +191,12 @@ export const About: React.FC<AboutProps> = ({ settings, setActiveTab }) => {
           </div>
         </div>
       </div>
+
+      <ImageDetailModal
+        item={selectedPicture}
+        onClose={() => setSelectedPicture(null)}
+        settings={settings}
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MenuItem, SiteSettings } from '../types';
-import { Search, MessageCircle, Coffee, Croissant, Utensils, Award, CheckCircle2, XCircle } from 'lucide-react';
+import { Search, MessageCircle, Coffee, Croissant, Utensils, Award, CheckCircle2, XCircle, Eye } from 'lucide-react';
+import { ImageDetailModal } from './ImageDetailModal';
 
 interface MenuPageProps {
   menuItems: MenuItem[];
@@ -10,6 +11,7 @@ interface MenuPageProps {
 export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   const categories = ['All', 'Coffee', 'Bakery', 'Food', 'Specialties'];
 
@@ -84,14 +86,17 @@ export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
                 key={item.id}
                 className="bg-[#241710] border border-[#3E281C] rounded-xl overflow-hidden flex flex-col justify-between hover:border-[#C88A4B] transition-all duration-300 shadow-md group"
               >
-                <div className="aspect-16/10 overflow-hidden relative">
+                <div
+                  onClick={() => setSelectedItem(item)}
+                  className="aspect-16/10 overflow-hidden relative cursor-pointer group/img"
+                >
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-3 left-3 flex gap-2">
+                  <div className="absolute top-3 left-3 flex gap-2 z-10">
                     <span className="bg-[#1C120C]/90 text-[#C88A4B] text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded border border-[#C88A4B]/40">
                       {item.category}
                     </span>
@@ -101,12 +106,26 @@ export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
                       </span>
                     )}
                   </div>
+
+                  {/* Eye Icon Hover & Quick Action Badge */}
+                  <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover/img:bg-[#C88A4B] group-hover/img:text-[#1C120C] p-2 rounded-full border border-[#3E281C] group-hover/img:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                    <Eye className="w-4 h-4" />
+                  </div>
+
+                  <div className="absolute inset-0 bg-[#1C120C]/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center p-4">
+                    <span className="bg-[#C88A4B] text-[#1C120C] font-bold text-xs uppercase px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-lg transform translate-y-2 group-hover/img:translate-y-0 transition-transform">
+                      <Eye className="w-4 h-4" /> View Details
+                    </span>
+                  </div>
                 </div>
 
                 <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-serif text-xl font-bold text-[#FAF6F0] group-hover:text-[#C88A4B] transition-colors">
+                      <h3
+                        onClick={() => setSelectedItem(item)}
+                        className="font-serif text-xl font-bold text-[#FAF6F0] group-hover:text-[#C88A4B] transition-colors cursor-pointer"
+                      >
                         {item.name}
                       </h3>
                       <span className="text-sm font-bold text-[#C88A4B] bg-[#1A100B] px-2.5 py-1 rounded border border-[#3A2519] whitespace-nowrap">
@@ -114,7 +133,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#B5A191] leading-relaxed mb-4">
+                    <p className="text-xs text-[#B5A191] leading-relaxed mb-4 line-clamp-2">
                       {item.description}
                     </p>
                   </div>
@@ -132,15 +151,25 @@ export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
                       )}
                     </div>
 
-                    <a
-                      href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Torrazur,%20I%20would%20like%20to%20order/inquire%20about%20${encodeURIComponent(item.name)}%20(${item.price})`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] text-xs font-medium rounded inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                      <span>Order via WA</span>
-                    </a>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setSelectedItem(item)}
+                        className="p-1.5 bg-[#2A1B12] hover:bg-[#C88A4B] text-[#FAF6F0] hover:text-[#1C120C] border border-[#3E281C] hover:border-[#C88A4B] rounded transition-colors cursor-pointer"
+                        title="View Full Details"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                      </button>
+
+                      <a
+                        href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Torrazur,%20I%20would%20like%20to%20order/inquire%20about%20${encodeURIComponent(item.name)}%20(${item.price})`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] text-xs font-medium rounded inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                        <span>Order via WA</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -148,6 +177,13 @@ export const MenuPage: React.FC<MenuPageProps> = ({ menuItems, settings }) => {
           </div>
         )}
       </div>
+
+      {/* Details Modal */}
+      <ImageDetailModal
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+        settings={settings}
+      />
     </div>
   );
 };

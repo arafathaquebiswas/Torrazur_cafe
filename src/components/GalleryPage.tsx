@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { GalleryItem } from '../types';
-import { X, Maximize2 } from 'lucide-react';
+import { Eye } from 'lucide-react';
+import { ImageDetailModal } from './ImageDetailModal';
 
 interface GalleryPageProps {
   galleryItems: GalleryItem[];
@@ -63,7 +64,7 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ galleryItems }) => {
               <div
                 key={item.id}
                 onClick={() => setSelectedImage(item)}
-                className="group relative bg-[#241710] border border-[#3E281C] rounded-xl overflow-hidden aspect-4/3 cursor-pointer hover:border-[#C88A4B] transition-all duration-300"
+                className="group relative bg-[#241710] border border-[#3E281C] rounded-xl overflow-hidden aspect-4/3 cursor-pointer hover:border-[#C88A4B] transition-all duration-300 shadow-lg"
               >
                 <img
                   src={item.imageUrl}
@@ -71,15 +72,21 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ galleryItems }) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1C120C] via-transparent to-transparent opacity-0 group-hover:opacity-90 transition-opacity flex flex-col justify-end p-5">
-                  <span className="text-[10px] font-mono tracking-widest text-[#C88A4B] uppercase">
+
+                {/* Always-visible Quick Eye Icon Badge on top-right */}
+                <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover:text-[#1C120C] group-hover:bg-[#C88A4B] p-2 rounded-full border border-[#3E281C] group-hover:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                  <Eye className="w-4 h-4" />
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1C120C] via-[#1C120C]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-5">
+                  <span className="text-[10px] font-mono tracking-widest text-[#C88A4B] uppercase font-bold">
                     {item.category}
                   </span>
                   <h3 className="font-serif text-lg font-bold text-[#FAF6F0]">
                     {item.title}
                   </h3>
-                  <div className="mt-2 text-xs text-[#E5D2C0] flex items-center gap-1 font-medium">
-                    <Maximize2 className="w-3.5 h-3.5" /> View Photo
+                  <div className="mt-2 text-xs text-[#FAF6F0] bg-[#C88A4B] text-[#1C120C] font-bold px-3 py-1.5 rounded-lg flex items-center justify-center gap-2 w-fit shadow">
+                    <Eye className="w-3.5 h-3.5" /> View Photo & Details
                   </div>
                 </div>
               </div>
@@ -88,41 +95,11 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ galleryItems }) => {
         )}
       </div>
 
-      {/* Lightbox Modal */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn"
-          onClick={() => setSelectedImage(null)}
-        >
-          <div
-            className="relative max-w-4xl w-full bg-[#1C120C] border border-[#3E281C] rounded-xl overflow-hidden shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-4 right-4 p-2 bg-[#1C120C]/80 text-[#FAF6F0] hover:text-[#C88A4B] rounded-full border border-[#3E281C] z-10 cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="max-h-[75vh] overflow-hidden bg-black flex items-center justify-center">
-              <img
-                src={selectedImage.imageUrl}
-                alt={selectedImage.title}
-                className="max-h-[75vh] w-auto object-contain"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="p-6 bg-[#241710]">
-              <span className="text-xs font-mono tracking-widest text-[#C88A4B] uppercase">
-                {selectedImage.category}
-              </span>
-              <h3 className="font-serif text-xl font-bold text-[#FAF6F0] mt-1">
-                {selectedImage.title}
-              </h3>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Lightbox / Details Modal */}
+      <ImageDetailModal
+        item={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 };

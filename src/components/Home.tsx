@@ -1,7 +1,8 @@
-import React from 'react';
-import { Coffee, UtensilsCrossed, Croissant, Award, MapPin, Phone, MessageCircle, Mail, Instagram, ArrowRight, Clock, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Coffee, UtensilsCrossed, Croissant, Award, MapPin, Phone, MessageCircle, Mail, Instagram, ArrowRight, Clock, ChevronRight, Eye } from 'lucide-react';
 import { SiteSettings, MenuItem } from '../types';
 import { TorrazurLogo } from './TorrazurLogo';
+import { ImageDetailModal, PictureDetailItem } from './ImageDetailModal';
 
 interface HomeProps {
   settings: SiteSettings;
@@ -10,6 +11,7 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ settings, menuItems, setActiveTab }) => {
+  const [selectedPicture, setSelectedPicture] = useState<PictureDetailItem | MenuItem | null>(null);
   const featuredItems = menuItems.filter(item => item.isFeatured).slice(0, 4);
 
   return (
@@ -97,16 +99,29 @@ export const Home: React.FC<HomeProps> = ({ settings, menuItems, setActiveTab })
             </div>
           </div>
 
-          <div className="relative">
-            <div className="aspect-4/3 rounded-lg overflow-hidden border border-[#3E291C] shadow-2xl">
+          <div className="relative group cursor-pointer" onClick={() => setSelectedPicture({
+            title: 'Torrazur Glass Bakery Counter Display',
+            category: 'Bakery',
+            imageUrl: '/images/torrazur-04.jpg',
+            description: 'Our house display filled with golden croissants, freshly baked focaccia, cornetti, and artisanal tarts.',
+          })}>
+            <div className="aspect-4/3 rounded-lg overflow-hidden border border-[#3E291C] shadow-2xl relative">
               <img
                 src="/images/torrazur-04.jpg"
                 alt="Torrazur Glass Bakery Counter Display"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
+              <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover:bg-[#C88A4B] group-hover:text-[#1C120C] p-2.5 rounded-full border border-[#3E281C] group-hover:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                <Eye className="w-5 h-5" />
+              </div>
+              <div className="absolute inset-0 bg-[#1C120C]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span className="bg-[#C88A4B] text-[#1C120C] font-bold text-xs uppercase px-4 py-2 rounded-lg flex items-center gap-2 shadow-xl">
+                  <Eye className="w-4 h-4" /> View Details
+                </span>
+              </div>
             </div>
-            <div className="absolute -bottom-6 -left-6 bg-[#281A12] border border-[#4A3225] p-5 rounded-lg shadow-xl hidden sm:block max-w-xs">
+            <div className="absolute -bottom-6 -left-6 bg-[#281A12] border border-[#4A3225] p-5 rounded-lg shadow-xl hidden sm:block max-w-xs z-10">
               <p className="font-serif italic text-sm text-[#E8D6C5]">
                 Freshly baked every morning with Italian craftsmanship.
               </p>
@@ -228,23 +243,40 @@ export const Home: React.FC<HomeProps> = ({ settings, menuItems, setActiveTab })
             {featuredItems.map(item => (
               <div
                 key={item.id}
-                className="bg-[#241710] border border-[#3D271B] rounded-lg overflow-hidden flex flex-col justify-between hover:border-[#C88A4B] transition-colors"
+                className="bg-[#241710] border border-[#3D271B] rounded-lg overflow-hidden flex flex-col justify-between hover:border-[#C88A4B] transition-colors group"
               >
-                <div className="aspect-4/3 overflow-hidden relative">
+                <div
+                  onClick={() => setSelectedPicture(item)}
+                  className="aspect-4/3 overflow-hidden relative cursor-pointer group/img"
+                >
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
                   />
-                  <span className="absolute top-3 left-3 bg-[#1C120C]/90 text-[#C88A4B] text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded border border-[#C88A4B]/40">
+                  <span className="absolute top-3 left-3 bg-[#1C120C]/90 text-[#C88A4B] text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded border border-[#C88A4B]/40 z-10">
                     {item.category}
                   </span>
+                  
+                  {/* Eye Icon Badge */}
+                  <div className="absolute top-3 right-3 bg-[#1C120C]/85 text-[#FAF6F0] group-hover/img:bg-[#C88A4B] group-hover/img:text-[#1C120C] p-2 rounded-full border border-[#3E281C] group-hover/img:border-[#C88A4B] transition-all shadow-md z-10 flex items-center justify-center">
+                    <Eye className="w-4 h-4" />
+                  </div>
+
+                  <div className="absolute inset-0 bg-[#1C120C]/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="bg-[#C88A4B] text-[#1C120C] font-bold text-xs uppercase px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-lg">
+                      <Eye className="w-4 h-4" /> View Details
+                    </span>
+                  </div>
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="font-serif text-lg font-bold text-[#FAF6F0]">
+                      <h3
+                        onClick={() => setSelectedPicture(item)}
+                        className="font-serif text-lg font-bold text-[#FAF6F0] hover:text-[#C88A4B] transition-colors cursor-pointer"
+                      >
                         {item.name}
                       </h3>
                       <span className="text-sm font-semibold text-[#C88A4B] whitespace-nowrap">
@@ -255,15 +287,24 @@ export const Home: React.FC<HomeProps> = ({ settings, menuItems, setActiveTab })
                       {item.description}
                     </p>
                   </div>
-                  <a
-                    href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Torrazur,%20I%20would%20like%20to%20order/inquire%20about%20${encodeURIComponent(item.name)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2 bg-[#1C120C] hover:bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] text-xs font-semibold rounded flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Inquire / Order</span>
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setSelectedPicture(item)}
+                      className="p-2 bg-[#1C120C] hover:bg-[#C88A4B] text-[#FAF6F0] hover:text-[#1C120C] border border-[#3D271B] hover:border-[#C88A4B] rounded transition-colors cursor-pointer"
+                      title="View Details"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </button>
+                    <a
+                      href={`https://wa.me/${settings.whatsapp.replace(/[^0-9]/g, '')}?text=Hi%20Torrazur,%20I%20would%20like%20to%20order/inquire%20about%20${encodeURIComponent(item.name)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 py-2 bg-[#1C120C] hover:bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] text-xs font-semibold rounded flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>Inquire / Order</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             ))}
@@ -405,6 +446,13 @@ export const Home: React.FC<HomeProps> = ({ settings, menuItems, setActiveTab })
           </div>
         </div>
       </section>
+
+      {/* Image / Item Detail Modal */}
+      <ImageDetailModal
+        item={selectedPicture}
+        onClose={() => setSelectedPicture(null)}
+        settings={settings}
+      />
     </div>
   );
 };
